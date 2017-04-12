@@ -3,11 +3,27 @@ import { firebaseDatabase } from './firebase';
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: null
+    };
+  }
+
   componentDidMount() {
+    firebaseDatabase.ref().child('text').on('value', snap => {
+      this.setState({
+        data: snap.val()
+      });
+    });
     
-    let bigOne = document.getElementById('bigOne');
-    let dbRef = firebaseDatabase.ref().child('text');
-    dbRef.on('value', snap => bigOne.innerText = snap.val());
+    /**
+     * old school way :
+     */
+    // let bigOne = document.getElementById('bigOne');
+    // let dbRef = firebaseDatabase.ref().child('text');
+    // dbRef.on('value', snap => bigOne.innerText = snap.val());
   }
 
   render() {
@@ -20,7 +36,7 @@ class App extends Component {
           One day, some data from Firebase will go here.
         </pre>
 
-        <hi id="bigOne"></hi>
+        <hi id="bigOne">{this.state.data}</hi>
       </div>
     );
   }
