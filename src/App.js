@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import firebase from './firebase';
+import { firebaseDatabase } from './firebase';
 import './App.css';
 
 class App extends Component {
   componentDidMount() {
     
     let bigOne = document.getElementById('bigOne');
-    let dbRef = firebase.database().ref().child('text');
+    let dbRef = firebaseDatabase.ref().child('text');
     dbRef.on('value', snap => bigOne.innerText = snap.val());
   }
 
