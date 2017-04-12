@@ -7,8 +7,12 @@ class App extends Component {
     super(props);
 
     this.state = {
-      data: null
+      data: null,
+      newData: ''
     };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -30,6 +34,41 @@ class App extends Component {
     // dbRef.on('value', snap => bigOne.innerText = snap.val());
   }
 
+  handleChange(e){
+    let newData = e.target.value.trim();
+    
+    this.setState({
+      // newData: newData
+      newData
+    })
+  }
+
+  handleSubmit(e){
+    e.preventDefault();
+    
+    const newData = this.state.newData;
+
+    if (newData !== "") {
+      // firebaseDatabase.ref().set({
+      //   text: newData
+      // });
+
+      // OR
+      // firebaseDatabase.ref()
+      //                 .child('text')
+      //                 .set(newData);
+      
+      // OR
+      firebaseDatabase.ref('/text')
+                      // .child('text')
+                      .set(newData);
+
+      this.setState({
+        newData: ''
+      });
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -41,6 +80,19 @@ class App extends Component {
           { this.state.data }
           {/*{ JSON.stringify(this.state.data) }*/}
         </pre>
+        <form
+          className="App-form"
+          onSubmit={this.handleSubmit}
+        >
+          <input
+            type="text"
+            value={this.state.newData}
+            onChange={this.handleChange}
+          />
+          <input
+            type="submit"
+          />
+        </form>
 
         <hi id="bigOne"></hi>
       </div>
