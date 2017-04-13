@@ -11,20 +11,41 @@ class App extends Component {
       newData: ''
     };
 
+    this.dataRef = null;
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
+    // initialization database fireabase ref()
+    this.dataRef = firebaseDatabase.ref('/text');
+
     // console.log all data from firebase database
-    firebaseDatabase.ref().on('value', data => console.log(data.val()));
+    
+    // callback way
+    // firebaseDatabase.ref().on('value', data => console.log(data.val()));
+    
+    // promise way
+    firebaseDatabase.ref()
+                    .once('value')
+                    .then(data => console.log(data.val()))
+    // .on('child_addded', data => data.val()) -> to get the value of children's attribute
+    
+    // this.dataRef // will log the exactly value of child / ref (text)
+    this.dataRef
+        .on('value', data => {
+          console.log(data.hasChildren())
+        });
     
     // set state from firebase database name text
-    firebaseDatabase.ref().child('text').on('value', snap => {
-      this.setState({
-        data: snap.val()
-      });
-    });
+    // firebaseDatabase.ref().child('text')
+    this.dataRef
+        .on('value', snap => {
+          this.setState({
+            data: snap.val()
+          });
+        });
 
     /**
      * old school way :
@@ -59,8 +80,10 @@ class App extends Component {
       //                 .set(newData);
       
       // OR
-      firebaseDatabase.ref('/text')
+      // firebaseDatabase.ref('/text')
+      this.dataRef
                       // .child('text')
+                      //.push(newData) // -> will create unique attribute with newData value inside child / ref (text)
                       .set(newData);
 
       this.setState({
